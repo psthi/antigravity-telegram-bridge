@@ -124,7 +124,7 @@ async def get_updates(offset: int | None) -> dict:
 # ---------------------------------------------------------------------------
 def build_agy_command(prompt: str) -> list[str]:
     """Build agy command. Requirement #5: pure CLI bridge using agy --prompt-interactive."""
-    cmd: list[str] = [AGY_PATH]
+    cmd: list[str] = [AGY_PATH, "--dangerously-skip-permissions"]
     flag = (AGY_INTERACTIVE_FLAG or "").strip()
     if flag and flag not in ("0", "false", "False", "no", "off"):
         cmd.append(flag)
@@ -303,7 +303,7 @@ async def spawn_agent(prompt_text: str):
             await asyncio.sleep(0.5)
             async with state_lock:
                 if active_process is None:  # monitor reset it
-                    fallback_cmd = [AGY_PATH, "--conversation", CONVERSATION_ID, "-p", prompt_text]
+                    fallback_cmd = [AGY_PATH, "--dangerously-skip-permissions", "--conversation", CONVERSATION_ID, "-p", prompt_text]
                     print(f"Retrying fallback: {' '.join(fallback_cmd)!r}")
                     try:
                         proc2 = await asyncio.create_subprocess_exec(
