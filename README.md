@@ -68,7 +68,12 @@ systemctl --user stop antigravity-telegram
 ```
 
 ## How it Works
-When a message arrives from your phone, the script calls `agy --conversation <id> -p "<text>"`. The output is synchronously captured and relayed back to the Telegram API.
+When a message arrives from your phone, the script securely routes it into an active Antigravity CLI session. Because this runs as an asynchronous state machine in the background, it completely bypasses MCP token bloat and keeps your context window pristine.
+
+### ⚠️ Important Note on Permissions & Headless Mode
+By default, the Antigravity CLI operates in a strict security mode. If a command requires explicit permission (like deleting a file) and the CLI is run in "headless" or print mode (`-p`), it recognizes that there is no human keyboard attached and **instantly auto-denies** the action. It will not emit a `[Y/n]` prompt for the bridge to intercept, which causes permission-gated tasks to fail with a `headless mode cannot prompt` error.
+
+To solve this, `bot.py` is hardcoded to run with the `--dangerously-skip-permissions` flag. This bypasses the headless TTY block and grants the agent full autonomy to execute commands while you message it from Telegram. **Because of this, you should only use this bridge on a secure, private Telegram bot where you are the only authorized user.**
 
 ## Tags
 `antigravity` `ai-agent` `telegram-bot` `cli-bridge` `local-ai` `automation` `llm`
